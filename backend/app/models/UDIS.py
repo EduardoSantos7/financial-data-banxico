@@ -1,3 +1,8 @@
+import os
+from datetime import datetime
+
+from backend.app.utils.SIEUtils import SIEUtils
+from backend.app.utils.SIEUtils import SIESeries
 from backend.app import db
 
 
@@ -8,10 +13,10 @@ class UDIS(db.Model):
     __bind_key__ = 'udis'
 
     date = db.Column(db.Date(), primary_key=True, index=True)
-    value = db.Column(db.Integer)
+    value = db.Column(db.Float)
 
     def __init__(self, date, value):
-        self.date = date
+        self.date = datetime.strptime(date, '%d/%m/%Y').date()
         self.value = value
 
     def save(self):
@@ -19,8 +24,9 @@ class UDIS(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get_udis_from_range(start_date=None, end_range=None):
-        return [{'date': '12/12/12', 'value': 6.4}, {'date': '13/12/12', 'value': 6.5}]
+    def get_udis_from_range(start_date, end_range):
+        data = SIEUtils.get_data(SIESeries.UDIS, start_date, end_range)
+        return data
 
     def delete(self):
         db.session.delete(self)

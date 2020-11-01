@@ -20,6 +20,8 @@ def create_app(config_name):
     app.config.from_object(app_config['development'])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     @app.route('/UDIS/', methods=['GET'])
     def udis():
@@ -32,7 +34,17 @@ def create_app(config_name):
 
         args = request.args
 
-        udis = UDIS.get_udis_from_range()
+        udis = UDIS.get_udis_from_range(args.get('start_date', ''), args.get('end_date', ''))
+
+        for udi in udis:
+            try:
+                value = float(udi.get('dato'))
+            except ValueError:
+                value = 0
+
+            obj = UDIS(udi.get('fecha'), value)
+
+            obj.save()
 
         response = jsonify(udis)
         response.status_code = 200
