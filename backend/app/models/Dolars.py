@@ -7,11 +7,11 @@ from backend.app.utils.SIEUtils import SIESeries
 from backend.app import db
 
 
-class Dolars(db.Model):
+class Dollars(db.Model):
     """This class represents the power plant table."""
 
-    __tablename__ = 'dolars'
-    __bind_key__ = 'dolars'
+    __tablename__ = 'dollars'
+    __bind_key__ = 'dollars'
 
     date = db.Column(db.Date(), primary_key=True, index=True)
     value = db.Column(db.Float)
@@ -25,28 +25,28 @@ class Dolars(db.Model):
         db.session.commit()
 
     @staticmethod
-    def save_from_list(dolars):
+    def save_from_list(dollars):
         added = []
-        for dolar in dolars:
+        for dollar in dollars:
             try:
-                value = float(dolar.get('dato'))
+                value = float(dollar.get('dato'))
             except (ValueError, TypeError):
                 value = 0
 
-            obj = Dolars(dolar.get('fecha'), value)
+            obj = Dollars(dollar.get('fecha'), value)
             obj.save()
             added.append(obj.as_dict())
 
         return added
 
     @staticmethod
-    def get_dolars_from_range(start_range, end_range):
+    def get_dollars_from_range(start_range, end_range):
         # Get the data saved on the db that match in the user's range
-        dolars = db.session.query(Dolars).filter(Dolars.date.between(start_range, end_range)).all()
-        if dolars:
+        dollars = db.session.query(Dollars).filter(Dollars.date.between(start_range, end_range)).all()
+        if dollars:
             result = []
-            for dolar in dolars:
-                result.append(dolar.as_dict())
+            for dollar in dollars:
+                result.append(dollar.as_dict())
 
             # Verify the begging and ending of the range
             query_start_date = result[0].get('date')
@@ -58,24 +58,24 @@ class Dolars(db.Model):
             start_date = datetime.strptime(start_range, '%Y-%m-%d').date()
             if query_start_date > start_date:
                 begin_range_data = SIEUtils.get_data(
-                    SIESeries.Dolars, start_date, (query_start_date - timedelta(days=1)).strftime('%Y-%m-%d'))
+                    SIESeries.Dollars, start_date, (query_start_date - timedelta(days=1)).strftime('%Y-%m-%d'))
 
-                begin_range_data = Dolars.save_from_list(begin_range_data)
+                begin_range_data = Dollars.save_from_list(begin_range_data)
 
             # If the user range ends after the query results then we need to request the missing data.
             end_date = datetime.strptime(end_range, '%Y-%m-%d').date()
             if query_end_date < end_date:
                 end_range_data = SIEUtils.get_data(
-                    SIESeries.Dolars, (query_end_date + timedelta(days=1)).strftime('%Y-%m-%d'), end_range)
+                    SIESeries.Dollars, (query_end_date + timedelta(days=1)).strftime('%Y-%m-%d'), end_range)
 
-                end_range_data = Dolars.save_from_list(end_range_data)
+                end_range_data = Dollars.save_from_list(end_range_data)
 
             return begin_range_data + result + end_range_data
 
         # If no previous record inside the range.
         else:
-            data = SIEUtils.get_data(SIESeries.Dolars, start_range, end_range)
-            data = Dolars.save_from_list(data)
+            data = SIEUtils.get_data(SIESeries.Dollars, start_range, end_range)
+            data = Dollars.save_from_list(data)
             return data
 
     def delete(self):
