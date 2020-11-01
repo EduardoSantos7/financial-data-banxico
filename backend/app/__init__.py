@@ -36,16 +36,6 @@ def create_app(config_name):
 
         udis = UDIS.get_udis_from_range(args.get('start_date', ''), args.get('end_date', ''))
 
-        for udi in udis:
-            try:
-                value = float(udi.get('dato'))
-            except ValueError:
-                value = 0
-
-            obj = UDIS(udi.get('fecha'), value)
-
-            obj.save()
-
         response = jsonify(udis)
         response.status_code = 200
         return response
