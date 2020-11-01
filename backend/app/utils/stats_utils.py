@@ -12,8 +12,8 @@ class StatsUtils:
         _min = float('inf')
         avg = 0
         for elem in _list:
-            _max = max(_max, elem)
-            _min = min(_min, elem)
+            _max = max(_max, elem or 0)
+            _min = min(_min, elem or 0)
             avg += elem
 
         return _max, _min, avg/len(_list)

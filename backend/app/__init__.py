@@ -15,6 +15,7 @@ db = SQLAlchemy()
 
 def create_app(config_name):
     from backend.app.models.UDIS import UDIS
+    from backend.app.models.Dolars import Dolars
 
     app = FlaskAPI(__name__, instance_relative_config=True)
     print("FFF-------------------->", config_name)
@@ -40,6 +41,27 @@ def create_app(config_name):
         _max, _min, avg = StatsUtils.max_min_avg(values)
 
         response = {'data': udis, 'max': _max, 'min': _min, 'avg': avg}
+        response = jsonify(response)
+        response.status_code = 200
+        return response
+
+    @app.route('/dolars/', methods=['GET'])
+    def dolars():
+        schema = UrlQuerySchema()
+
+        errors = schema.validate(request.args)
+
+        if errors:
+            abort(400, str(errors))
+
+        args = request.args
+
+        dolars = Dolars.get_dolars_from_range(args.get('start_date', ''), args.get('end_date', ''))
+        print(dolars)
+        values = [dolar.get('value') for dolar in dolars]
+        _max, _min, avg = StatsUtils.max_min_avg(values)
+
+        response = {'data': dolars, 'max': _max, 'min': _min, 'avg': avg}
         response = jsonify(response)
         response.status_code = 200
         return response

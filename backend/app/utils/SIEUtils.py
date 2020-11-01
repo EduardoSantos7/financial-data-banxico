@@ -24,3 +24,4 @@ class SIEUtils:
 
 class SIESeries:
     UDIS = 'SP68257'
+    Dolars = 'SF63528'

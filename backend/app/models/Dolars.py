@@ -7,11 +7,11 @@ from backend.app.utils.SIEUtils import SIESeries
 from backend.app import db
 
 
-class UDIS(db.Model):
+class Dolars(db.Model):
     """This class represents the power plant table."""
 
-    __tablename__ = 'udis'
-    __bind_key__ = 'udis'
+    __tablename__ = 'dolars'
+    __bind_key__ = 'dolars'
 
     date = db.Column(db.Date(), primary_key=True, index=True)
     value = db.Column(db.Float)
@@ -25,28 +25,28 @@ class UDIS(db.Model):
         db.session.commit()
 
     @staticmethod
-    def save_from_list(udis):
+    def save_from_list(dolars):
         added = []
-        for udi in udis:
+        for dolar in dolars:
             try:
-                value = float(udi.get('dato'))
+                value = float(dolar.get('dato'))
             except (ValueError, TypeError):
                 value = 0
 
-            obj = UDIS(udi.get('fecha'), value)
+            obj = Dolars(dolar.get('fecha'), value)
             obj.save()
             added.append(obj.as_dict())
 
         return added
 
     @staticmethod
-    def get_udis_from_range(start_range, end_range):
+    def get_dolars_from_range(start_range, end_range):
         # Get the data saved on the db that match in the user's range
-        udis = db.session.query(UDIS).filter(UDIS.date.between(start_range, end_range)).all()
-        if udis:
+        dolars = db.session.query(Dolars).filter(Dolars.date.between(start_range, end_range)).all()
+        if dolars:
             result = []
-            for udi in udis:
-                result.append(udi.as_dict())
+            for dolar in dolars:
+                result.append(dolar.as_dict())
 
             # Verify the begging and ending of the range
             query_start_date = result[0].get('date')
@@ -58,24 +58,24 @@ class UDIS(db.Model):
             start_date = datetime.strptime(start_range, '%Y-%m-%d').date()
             if query_start_date > start_date:
                 begin_range_data = SIEUtils.get_data(
-                    SIESeries.UDIS, start_date, (query_start_date - timedelta(days=1)).strftime('%Y-%m-%d'))
+                    SIESeries.Dolars, start_date, (query_start_date - timedelta(days=1)).strftime('%Y-%m-%d'))
 
-                begin_range_data = UDIS.save_from_list(begin_range_data)
+                begin_range_data = Dolars.save_from_list(begin_range_data)
 
             # If the user range ends after the query results then we need to request the missing data.
             end_date = datetime.strptime(end_range, '%Y-%m-%d').date()
             if query_end_date < end_date:
                 end_range_data = SIEUtils.get_data(
-                    SIESeries.UDIS, (query_end_date + timedelta(days=1)).strftime('%Y-%m-%d'), end_range)
+                    SIESeries.Dolars, (query_end_date + timedelta(days=1)).strftime('%Y-%m-%d'), end_range)
 
-                end_range_data = UDIS.save_from_list(end_range_data)
+                end_range_data = Dolars.save_from_list(end_range_data)
 
             return begin_range_data + result + end_range_data
 
         # If no previous record inside the range.
         else:
-            data = SIEUtils.get_data(SIESeries.UDIS, start_range, end_range)
-            data = UDIS.save_from_list(data)
+            data = SIEUtils.get_data(SIESeries.Dolars, start_range, end_range)
+            data = Dolars.save_from_list(data)
             return data
 
     def delete(self):
@@ -83,7 +83,7 @@ class UDIS(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f"<UDIS: {self.date} Value: {self.value}>"
+        return f"<Dolar: {self.date} Value: {self.value}>"
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
