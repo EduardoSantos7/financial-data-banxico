@@ -6,6 +6,7 @@ from flask import request, jsonify, abort
 
 from backend.instance.config import app_config
 from backend.app.schemas import UrlQuerySchema
+from backend.app.utils.stats_utils import StatsUtils
 
 
 # initialize sql-alchemy
@@ -35,8 +36,11 @@ def create_app(config_name):
         args = request.args
 
         udis = UDIS.get_udis_from_range(args.get('start_date', ''), args.get('end_date', ''))
+        values = [udi.get('value') for udi in udis]
+        _max, _min, avg = StatsUtils.max_min_avg(values)
 
-        response = jsonify(udis)
+        response = {'data': udis, 'max': _max, 'min': _min, 'avg': avg}
+        response = jsonify(response)
         response.status_code = 200
         return response
 
