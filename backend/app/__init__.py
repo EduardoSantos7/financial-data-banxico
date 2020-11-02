@@ -36,7 +36,8 @@ def create_app(config_name):
 
         args = request.args
 
-        udis = UDIS.get_udis_from_range(args.get('start_date', ''), args.get('end_date', ''))
+        udis = UDIS.get_udis_from_range(
+            args.get('start_date', ''), args.get('end_date', ''))
         values = [udi.get('value') for udi in udis]
         _max, _min, avg = StatsUtils.max_min_avg(values)
 
@@ -45,7 +46,7 @@ def create_app(config_name):
         response.status_code = 200
         return response
 
-    @app.route('/dolars/', methods=['GET'])
+    @app.route('/dollars/', methods=['GET'])
     def dolars():
         schema = UrlQuerySchema()
 
@@ -56,7 +57,8 @@ def create_app(config_name):
 
         args = request.args
 
-        dollars = Dollars.get_dollars_from_range(args.get('start_date', ''), args.get('end_date', ''))
+        dollars = Dollars.get_dollars_from_range(
+            args.get('start_date', ''), args.get('end_date', ''))
         values = [dollar.get('value') for dollar in dollars]
         _max, _min, avg = StatsUtils.max_min_avg(values)
 
