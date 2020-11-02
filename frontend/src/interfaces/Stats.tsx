@@ -1,0 +1,1 @@
+export default interface Stats { max: number, min: number, avg: number }
