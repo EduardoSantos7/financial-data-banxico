@@ -16,4 +16,4 @@ class StatsUtils:
             _min = min(_min, elem or 0)
             avg += elem
 
-        return _max, _min, avg/len(_list)
+        return _max, _min, (avg/len(_list) if len(_list) else 0)

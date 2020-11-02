@@ -7,6 +7,7 @@ from flask import request, jsonify, abort
 from backend.instance.config import app_config
 from backend.app.schemas import UrlQuerySchema
 from backend.app.utils.stats_utils import StatsUtils
+from flask_cors import CORS
 
 
 # initialize sql-alchemy
@@ -18,7 +19,7 @@ def create_app(config_name):
     from backend.app.models.Dollars import Dollars
 
     app = FlaskAPI(__name__, instance_relative_config=True)
-    print("FFF-------------------->", config_name)
+    CORS(app)
     app.config.from_object(app_config['development'])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
