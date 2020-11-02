@@ -1,0 +1,1 @@
+export default  interface Dates { startDate: any, endDate: any; }
