@@ -1,0 +1,55 @@
+version: '3.7'
+
+services: 
+    frontend:
+        image: node:12-alpine
+        volumes: 
+            - ./frontend:/app
+        working_dir: /app
+        ports: 
+            - 3000:3000
+        expose: 
+            - 3000
+        links: 
+            - backend_flask
+        command: npm start
+        tty: true
+        networks: 
+            - frontend
+        depends_on: 
+            - backend_flask
+
+    mysql_db:
+        image: "mysql:latest"
+        command: --default-authentication-plugin=mysql_native_password
+        restart: unless-stopped
+        networks: 
+            - backend
+        environment:
+            MYSQL_DATABASE: financial_data_banxico
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    
+    backend_flask:
+        build: ./backend
+        volumes: 
+            - ./backend:/backend
+        working_dir: /backend
+        command: flask run
+        restart: on-failure:10
+        ports:
+            - "5000:5000"
+        expose: 
+            - 5000
+        depends_on: 
+            - mysql_db
+        env_file:
+            - ./backend/.env
+        networks: 
+            - frontend
+            - backend
+
+networks:
+    frontend:
+        driver: bridge
+    backend:
+        driver: bridge

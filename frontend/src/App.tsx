@@ -43,7 +43,7 @@ function App() {
       let endRange = formatDate(endDate);
       
       
-      axios.get(`dollars?start_date=${startRange}&end_date=${endRange}`, {headers: { 'Content-Type': 'application/json'}})
+      axios.get(`http://localhost:5000/dollars?start_date=${startRange}&end_date=${endRange}`, {headers: { 'Content-Type': 'application/json'}})
         .then((response) => {
           const data = transformIntoTimeValueList(response.data.data)
           const { max, min, avg }: Stats = {...response.data}
@@ -54,7 +54,7 @@ function App() {
             console.log(error);
         });
       
-      axios.get(`UDIS?start_date=${startRange}&end_date=${endRange}`, {headers: { 'Content-Type': 'application/json'}})
+      axios.get(`http://localhost:5000/UDIS?start_date=${startRange}&end_date=${endRange}`, {headers: { 'Content-Type': 'application/json'}})
         .then((response) => {
           const data = transformIntoTimeValueList(response.data.data)
           const { max, min, avg }: Stats = { ...response.data }
