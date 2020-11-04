@@ -1,6 +1,7 @@
 # financial-data-banxico
 
-Financial-data-banxico is a web app that allows clients to get and visualize daily data about UDIS and dollar, this data comes from Banxico service. The backend of the app is built-in `Python 3` using `Flask` to build the API, `SQLAlchemy`, `MySQL` to save the data of UDIS and Dolar. The frontend of the app is built using `React` and `Typescript` for the UI, `Axios` for create requests and `ApexCharts` to create the charts.
+
+Financial-data-banxico is a web app that allows clients to get and visualize daily data about UDIS and dollar, this data comes from Banxico service. The backend of the app is built-in Python 3 using Flask to build the API, SQLAlchemy, MySQL to save the data of UDIS and Dolar. The frontend of the app is built using React and Typescript for the UI, Axios for creating requests, and ApexCharts to create the charts.
 
 ### Features!
 -----------------
