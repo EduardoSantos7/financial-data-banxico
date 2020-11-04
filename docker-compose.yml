@@ -28,8 +28,6 @@ services:
         environment:
             MYSQL_DATABASE: financial_data_banxico
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-        volumes:
-            - database-data:/var/lib/mysql/data
     
     backend_flask:
         build: ./backend
@@ -49,9 +47,6 @@ services:
         networks: 
             - frontend
             - backend
-
-volumes:
-    database-data:
 
 networks:
     frontend:
